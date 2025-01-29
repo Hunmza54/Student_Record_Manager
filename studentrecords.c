@@ -44,20 +44,41 @@ void Add_record()
 {
     FILE *fptr;
     fptr = fopen("Students.dat", "ab");
+    FILE *fptr2;
+    fptr2 = fopen("Students.dat", "rb");
+    int found;
     Student newStudent;
+    Student curr_record;
+
     printf("Enter Student ID: ");
     scanf("%d", &newStudent.studentID);
-    printf("Enter Student Name: ");
-    scanf(" %[^\n]", newStudent.studentName);
-    printf("Enter Email ID: ");
-    scanf(" %[^\n]", newStudent.emailID);
-    printf("Enter Course ID: ");
-    scanf(" %[^\n]", newStudent.courseID);
-    printf("Enter Grade: ");
-    scanf(" %[^\n]", newStudent.grade);
-    fwrite(&newStudent, sizeof(Student), 1, fptr);
-    fclose(fptr);
-    printf("Record added successfully.\n");
+    while (fread(&curr_record, sizeof(Student), 1, fptr2))
+    {
+        if (curr_record.studentID == newStudent.studentID)
+        {
+            printf("Student with this student ID already exists\n");
+            found = 1;
+            break; // Stop searching once the record is found
+        }
+        else
+        {
+            found = 0;
+        }
+    }
+    if (found == 0)
+    {
+        printf("Enter Student Name: ");
+        scanf(" %[^\n]", newStudent.studentName);
+        printf("Enter Email ID: ");
+        scanf(" %[^\n]", newStudent.emailID);
+        printf("Enter Course ID: ");
+        scanf(" %[^\n]", newStudent.courseID);
+        printf("Enter Grade: ");
+        scanf(" %[^\n]", newStudent.grade);
+        fwrite(&newStudent, sizeof(Student), 1, fptr);
+        fclose(fptr);
+        printf("Record added successfully.\n");
+    }
 }
 
 void display_content()
@@ -77,7 +98,7 @@ void display_content()
     fclose(fptr);
 }
 
-void seek_record()
+int seek_record()
 {
     FILE *fptr;
     Student curr_record;
@@ -87,7 +108,7 @@ void seek_record()
     if (fptr == NULL)
     {
         printf("Error: Could not open the file!\n");
-        return;
+        return 0; // Indicating failure
     }
 
     printf("Enter Student ID of the student you are looking for: ");
@@ -106,12 +127,14 @@ void seek_record()
         }
     }
 
+    fclose(fptr);
+
     if (!found)
     {
         printf("Record with Student ID %d not found.\n", id);
     }
 
-    fclose(fptr);
+    return found; // Return 1 if found, 0 if not
 }
 
 void updateRecord()
@@ -168,12 +191,13 @@ void updateRecord()
     fclose(file);
 }
 
-void cont_question()
+int cont_question()
 {
     char cont;
-    printf("Do you want to continue (y/n):");
-    scanf("%c", &cont);
-    if (cont == "y")
+    printf("Do you want to continue (y/n): ");
+    scanf(" %c", &cont); // Notice the space before %c to ignore leading whitespace
+
+    if (cont == 'y' || cont == 'Y') // Allow uppercase 'Y' as well
     {
         return 1;
     }
@@ -282,6 +306,18 @@ int main()
         if (choose == 1)
         {
             createBinaryFile();
+            if (cont_question())
+            {
+                printf("Continuing...\n");
+                // Do something if user enters 'y'
+                continue;
+            }
+            else
+            {
+                printf("Exiting...\n");
+                // Do something else if user enters 'n'
+                choose = 7;
+            }
 
             continue;
         }
@@ -289,33 +325,86 @@ int main()
         else if (choose == 2)
         {
             Add_record();
-            delay(3);
-            continue;
+            if (cont_question())
+            {
+                printf("Continuing...\n");
+                // Do something if user enters 'y'
+                continue;
+            }
+            else
+            {
+                printf("Exiting...\n");
+                // Do something else if user enters 'n'
+                choose = 7;
+            }
         }
 
         else if (choose == 3)
         {
             display_content();
-            delay(3);
-            continue;
+            if (cont_question())
+            {
+                printf("Continuing...\n");
+                // Do something if user enters 'y'
+                continue;
+            }
+            else
+            {
+                printf("Exiting...\n");
+                // Do something else if user enters 'n'
+                choose = 7;
+            }
         }
 
         else if (choose == 4)
         {
             seek_record();
-            continue;
+            if (cont_question())
+            {
+                printf("Continuing...\n");
+                // Do something if user enters 'y'
+                continue;
+            }
+            else
+            {
+                printf("Exiting...\n");
+                // Do something else if user enters 'n'
+                choose = 7;
+            }
         }
 
         else if (choose == 5)
         {
             updateRecord();
-            continue;
+            if (cont_question())
+            {
+                printf("Continuing...\n");
+                // Do something if user enters 'y'
+                continue;
+            }
+            else
+            {
+                printf("Exiting...\n");
+                // Do something else if user enters 'n'
+                choose = 7;
+            }
         }
 
         else if (choose == 6)
         {
             delete_record();
-            continue;
+            if (cont_question())
+            {
+                printf("Continuing...\n");
+                // Do something if user enters 'y'
+                continue;
+            }
+            else
+            {
+                printf("Exiting...\n");
+                // Do something else if user enters 'n'
+                choose = 7;
+            }
         }
     }
 }
