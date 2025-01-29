@@ -168,6 +168,21 @@ void updateRecord()
     fclose(file);
 }
 
+void cont_question()
+{
+    char cont;
+    printf("Do you want to continue (y/n):");
+    scanf("%c", &cont);
+    if (cont == "y")
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 void delete_record()
 {
     FILE *fptr, *fptr_temp;
@@ -267,7 +282,7 @@ int main()
         if (choose == 1)
         {
             createBinaryFile();
-            delay(3);
+
             continue;
         }
 
