@@ -42,29 +42,37 @@ void createBinaryFile()
 
 void Add_record()
 {
-    FILE *fptr;
-    fptr = fopen("Students.dat", "ab");
-    FILE *fptr2;
-    fptr2 = fopen("Students.dat", "rb");
-    int found;
-    Student newStudent;
-    Student curr_record;
+    FILE *fptr, *fptr2;
+    int found = 0; // Initialize found to 0
+
+    fptr = fopen("Students.dat", "ab");  // Open for appending
+    fptr2 = fopen("Students.dat", "rb"); // Open for reading
+
+    if (fptr == NULL || fptr2 == NULL)
+    {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    Student newStudent, curr_record;
 
     printf("Enter Student ID: ");
     scanf("%d", &newStudent.studentID);
+
+    // Check if file has existing records
     while (fread(&curr_record, sizeof(Student), 1, fptr2))
     {
+        printf("Checking existing records...\n"); // Debug message
         if (curr_record.studentID == newStudent.studentID)
         {
-            printf("Student with this student ID already exists\n");
+            printf("Student with this ID already exists.\n");
             found = 1;
             break; // Stop searching once the record is found
         }
-        else
-        {
-            found = 0;
-        }
     }
+
+    fclose(fptr2); // Close the read file
+
     if (found == 0)
     {
         printf("Enter Student Name: ");
@@ -75,10 +83,12 @@ void Add_record()
         scanf(" %[^\n]", newStudent.courseID);
         printf("Enter Grade: ");
         scanf(" %[^\n]", newStudent.grade);
+
         fwrite(&newStudent, sizeof(Student), 1, fptr);
-        fclose(fptr);
         printf("Record added successfully.\n");
     }
+
+    fclose(fptr); // Close the append file
 }
 
 void display_content()
