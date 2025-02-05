@@ -1,3 +1,7 @@
+// T00719827
+// Hamza Saeed
+// COMP 2131
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
